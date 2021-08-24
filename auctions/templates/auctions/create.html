@@ -1,0 +1,18 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+  <h1>Create an Item Listing</h1>
+  {% if msg_success %}
+
+<div class="alert alert-primary" role="alert"> Hurray , you have created Listing {{listing}} </div>
+
+  {% endif %}
+
+ 
+
+  <form action="{% url 'create' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="OK! Create!" class="btn btn-primary">
+  </form>
+{% endblock %}

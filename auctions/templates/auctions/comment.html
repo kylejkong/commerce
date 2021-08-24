@@ -1,0 +1,19 @@
+{% extends 'auctions/layout.html' %}
+
+
+
+
+{% block body %}
+
+
+{{entry|safe}}
+
+<h2 style="text-shadow: 1px 1px chocolate; color:blue; font-size: 33px ">Drop a Comment </h2>
+
+<form action="{% url 'comment' listing_id %}" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Sounds About Right" class="btn btn-primary">
+</form>
+
+{% endblock %}

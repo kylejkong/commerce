@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if request.user.is_authenticated %}
+        {% if msg_success %}
+
+        <div class="alert alert-primary" role="alert"> Hurray, You have created Listing "{{listing}}" </div>
+        <div class="alert alert-primary" role="alert"> {{listing}} </div>
+
+        {% endif %}
+    
+        <h2>{{title}}</h2>
+
+        {% for listing in listings %}
+            {% if not listing.closed %}
+            <div class="container border p-2 m-2">
+                <div class="row">
+                    <div class="col">
+                        <img src="{{ listing.image }}" alt="image" style="width: 300px; height: auto">
+                        <img src="{{ listing.img_url }}" alt="image" style="width: 300px; height: auto">
+                    </div>
+                    <div class="col text-left">
+                        <h3> Listing ID {{listing.id}} </h3>
+                        <a href="{% url 'listing_view' listing.id%}" class="display-flex">{{listing.item_name}}</a>
+                        <h4>Buyout Price: ${{ listing.price }}</h4>
+                        <p><small>{{ listing.start_time }}</small></p>
+                        
+                       
+                    </div>
+
+
+
+
+            {% endif %}
+        {% endfor %}
+    {% endif %}   
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if request.user.is_authenticated %}
+    
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if msg_error %}
+            <p> {{msg_error}} ID {{listing.id}}: {{listing.item_name}} </p>
+        {% endif %}
+
+        {% if msg_success %}
+            <p> {{msg_success}} ID {{listing.id}}: {{listing.item_name}}</p>
+        {% endif %}
+
+        {% if msg_watchlist %}
+            <p> {{msg_watchlist}} </p>
+        {% endif %}
+        <h2>{{title}}</h2>
+
+        {% if delete_success %}
+            <p> {{delete_success}} </p>
+        {% endif %}
+
+        {% if watchlist_remove %}
+            <p> {{watchlist_remove}} ID {{listing.id}}: {{listing.item_name}}</p>
+        {% endif %}
+
+        {% for listing in listings %}
+            {% if not listing.close_listing %}
+            <div class="container border p-2 m-2">
+                <div class="row">
+                    <div class="col">
+                        
+                        <img src="{{ listing.img_url }}" alt="no img available" style="width: 300px; height: auto">
+                    </div>
+                    <div class="col text-left">
+                        <h3> Listing ID {{listing.id}} </h3>
+                        <a href="{% url 'listing_view' listing.id%}" class="display-flex">{{listing.item_name}}</a>
+                        <h4>Price Now: ${{ listing.price }}</h4>
+                        <p><small>{{ listing.start_time }}</small></p>
+                        <p><small>Seller: {{listing.seller}}</small></p>
+                        
+                        
+                       
+                    </div>
+
+
+
+
+            {% endif %}
+        {% endfor %}
+    {% endif %}   
+{% endblock %}

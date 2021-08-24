@@ -1,0 +1,275 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+<style>
+
+
+
+
+button .comment { 
+  display: None;
+  }
+
+button:hover .replies { 
+display: none; 
+
+}
+
+button:hover .comment { 
+display: inline-block; 
+}
+
+
+
+
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,600,700');
+
+body{
+  font-family: 'Nunito', sans-serif;
+}
+
+.a{color: #E7484F}
+.b{color: #F68B1D}
+.c{color: #FCED00}
+.d{color: #009E4F}
+.e{color: #00AAC3}
+.f{color:  #732982}
+
+
+.container{
+  margin-top: 150px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.rainbow{
+  background-color: #343A40;
+  border-radius: 4px;  
+  color: #fff;
+  cursor: pointer;
+  padding: 8px 16px;
+  
+}
+
+.rainbow-1:hover{
+   background-image: linear-gradient(90deg, #00C0FF 0%, #FFCF00 49%, #FC4F4F 80%, #00C0FF 100%);
+   animation:slidebg 5s linear infinite;
+}
+
+.rainbow-2:hover{
+  background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet, red);
+  animation:slidebg 2s linear infinite;
+}
+
+.rainbow-3:hover{
+  background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, red);
+  animation:slidebg 2s linear infinite;
+}
+
+.rainbow-4:hover{
+   background-image:     linear-gradient(
+      to right, 
+      #E7484F,
+      #F68B1D, 
+      #FCED00,
+      #009E4F,
+      #00AAC3,
+      #732982
+    );
+  animation:slidebg 2s linear infinite;
+}
+
+
+.rainbow-5:hover{
+   background-image:     linear-gradient(
+      to right, 
+      #E7484F,
+      #E7484F 16.65%,
+      #F68B1D 16.65%,
+      #F68B1D 33.3%,
+      #FCED00 33.3%,
+      #FCED00 49.95%,
+      #009E4F 49.95%,
+      #009E4F 66.6%,
+      #00AAC3 66.6%,
+      #00AAC3 83.25%,
+      #732982 83.25%,
+      #732982 100%,
+      #E7484F 100%
+     
+     
+     
+    );
+  animation:slidebg 2s linear infinite;
+}
+
+
+@keyframes slidebg {
+  to {
+    background-position:20vw;
+  }
+}
+
+.follow{
+  margin-top: 40px;
+}
+
+.follow a{
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+</style>
+
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if user == listing.seller %}
+<a class="btn btn-danger" href="{% url 'delete' listing.id %}" onclick="return confirm ('Listing will be deleted permanently, are you sure?')">Delete Post!</a>
+
+
+
+  {% if listing.close_listing == False %}
+    {% if listing.price != listing.bids %}
+    <a class="btn btn-warning" href="{% url 'close_listing' listing=listing.id %}" onclick="return confirm ('By Closing this auction, a winner will be declared!')">Close listing</a>
+    {% endif %}
+  {% endif %}
+
+  {% if listing.close_listing == True %}
+    <a class="btn btn-warning" href="{% url 'unclose_listing' listing=listing.id %}"  onclick="return confirm ('Are you sure you want to unclose this auction?')">Unclose listing</a>
+  {% endif %}
+{% endif %}
+
+
+  {% if listing.close_listing == True %}
+  <div class="alert alert-info" role="alert">
+    This listing is no longer available!
+  </div>
+  {% endif %} 
+  <h2>{{ title }}</h2>
+  <h6 style="position: absolute; right: 0" > Listing {{listing.id}} </h6>
+  <ul>
+    <li><h1>  Auction Name: {{ listing.item_name}}</h1></li>
+    <img src="{{ listing.img_url }}" alt="no img available" style="width: 300px; height: auto">
+    <li> Description: {{listing.item_description}}</li>
+    <li> Category: {{listing.category}}</li>
+    <li> Seller: {{listing.seller}}</li>
+    <li> Initial Bid: $ {{listing.bids}}</li>
+    <li><form action="{% url 'listing_view' listing.id %}" method = "POST">
+        {% if user == listing.seller %}
+        Current Highest Bid: ${{listing.price}}
+        {% else %}
+          
+        <button type = "submit" class = "rainbow-3" style="border:1px solid gray; background-color: transparent;"><a href="{% url 'new_bid' listing.id %}">
+        {% csrf_token %}
+        <span class ="replies">Current Highest Bid: ${{listing.price}}</span>
+        <span class ="comment">Bid Now ! </span>
+
+        </a></button>
+  
+        {% endif %}  
+
+      </form>
+    </li>
+  </ul>
+
+  
+  {% for l in watchlist %}
+    {% if l.listing.id == listing.id %}
+      <p> This item is already in your Watchlist</p>
+    {% endif %}
+  {% endfor %}
+
+
+
+
+ 
+  <div class="">
+    {% if listing.close_listing == True %}
+    <p> Listing has been closed</p>
+    <P> Winning Bid $ {{listing.price}}</P>
+      
+    <P> Winner is {{listing.bid_winner}}, Congratz !</P>
+    
+    
+    {% else %}
+    <form action="{% url 'watchlist_add_remove' listing.id %}" method = "POST">
+      {% csrf_token %}
+      <button type="submit" class= "rainbow-1" style="background-color:palegreen ;">Watchlist Add/Remove</button>
+    </form>
+    {% endif %}
+  </div>
+  
+  <div>
+
+  </div>
+
+    
+    <div>
+
+         <a href="{% url 'view_bids' listing.id %}" type ='submit' class="rainbow-3">Bid History</a>
+ 
+    
+    </div>
+
+    <h4>Comments</h4>
+    {% if msg %} {{ msg }} {% endif %}
+
+  <a href="{% url 'comment' listing.id %}"><span class="rainbow-4" type='submit'>Drop a Comment!</span></a>
+
+        {% if comments %}
+          {% for comment in comments %}
+          <div class="container m3-5 p-2 border">
+              <p><strong>{{ comment.title }}</strong></p>
+              <p class="mt-n2">{{ comment.comment }}</p>
+              <p class="mt-n3"><small>{{ comment.time }}</small></p>
+              <p class="mt-n3"><small>by {{ comment.user }}</small></p>
+              {% if user == listing.seller %}
+              
+                            
+              <form action = "{% url 'delete_comment' %}" method = "POST">
+                  {% csrf_token %}
+                  <input type="hidden" class = current_url name="comment_id" value="{{ comment.id }}"/>
+                
+                  <button>Delete Comment!!!</button>
+                </form>
+              
+              {% elif user == comment.user %}
+              
+              <form action = "{% url 'delete_comment' %}" method = "POST">
+                {% csrf_token %}
+                <input type="hidden" class = current_url name="comment_id" value="{{ comment.id }}"/>
+              
+                <button>Delete Comment!!!</button>
+              </form>
+
+
+
+              {% endif %}
+
+
+            </div>
+
+            </div>
+          {% endfor %}
+        {% endif %}
+
+
+
+
+
+    </div>
+
+
+{% endblock %}

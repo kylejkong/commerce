@@ -1,0 +1,48 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %} Item Bid History {% endblock %}
+{% block body %}
+
+<head>
+<style>
+    table, th, td {
+      border: 1px solid black;
+    }
+</style>
+</head>
+        <body>
+        
+        <h2>Bid History</h2>
+        
+        
+        
+    {% for bid in listing.listing_bid.all %}
+        <table style="width:100%">
+        <tr>
+            <th>Bidder</th>
+            <th>Bid Amount</th> 
+            <th>Time</th>
+        </tr>
+        <tr>
+            {% if user == listing.seller %}   
+            <td>{{bid.user}}</td>
+            <td>{{bid.price}}</td>
+            <td>{{bid.time}}</td>
+            {% elif user == bid.user %}
+            <td>YOU</td>
+            <td>{{bid.price}}</td>
+            <td>{{bid.time}}</td>
+            {% else %}
+            <td>Competitive Mysterious Buyer</td>
+            <td>{{bid.price}}</td>
+            <td>{{bid.time}}</td>
+            {% endif %}
+
+        </tr>
+
+        </table>
+        
+        </body>
+        </html>
+    {% endfor %}
+{% endblock %}
